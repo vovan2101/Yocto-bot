@@ -13,16 +13,20 @@ producer.on('error', (error) => {
 });
 
 const sendMessage = (message) => {
-    const payloads = [
-        { topic: 'form-submissions', messages: JSON.stringify(message) }
-    ];
+    const topics = ['precursorvc-form', 'pathvc-form'];
 
-    producer.send(payloads, (error, result) => {
-        if (error) {
-            console.error('Failed to send message', error);
-        } else {
-            console.log('Message sent successfully', result);
-        }
+    topics.forEach((topic) => {
+        const payloads = [
+            { topic: topic, messages: JSON.stringify(message) }
+        ];
+
+        producer.send(payloads, (error, result) => {
+            if (error) {
+                console.error('Failed to send message', error);
+            } else {
+                console.log('Message sent successfully to topic', topic, result);
+            }
+        });
     });
 };
 

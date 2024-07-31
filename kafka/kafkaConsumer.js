@@ -1,29 +1,37 @@
 const kafka = require('kafka-node');
 const { KafkaClient, Consumer } = kafka;
-const fillForm = require('../puppeteer/fillForm');
+const precursorvcForm = require('../puppeteer/precursorvcForm');
+const pathvcForm = require('../puppeteer/pathvcForm');
 
 const client = new KafkaClient({ kafkaHost: 'localhost:9092' });
 const consumer = new Consumer(
     client,
-    [{ topic: 'form-submissions', partition: 0 }],
+    [
+        { topic: 'precursorvc-form', partition: 0 },
+        { topic: 'pathvc-form', partition: 0 }
+    ],
     { autoCommit: true }
 );
 
 consumer.on('message', async (message) => {
-    console.log('Raw message received:', message); // Логирование сырых данных сообщения
+    console.log('Raw message received:', message);
 
     let formData;
     try {
-        formData = JSON.parse(message.value.toString()); // Добавлена проверка toString()
-        console.log('Parsed message:', formData); // Логирование парсенных данных
+        formData = JSON.parse(message.value.toString());
+        console.log('Parsed message:', formData);
     } catch (error) {
         console.error('Error parsing message:', error);
     }
 
     if (formData) {
-        await fillForm(formData);
+        if (message.topic === 'precursorvc-form') {
+            await precursorvcForm(formData);
+        } else if (message.topic === 'pathvc-form') {
+            await pathvcForm(formData);
+        }
     } else {
-        console.error('No form data received');
+        console.error('No form data received or unknown topic');
     }
 });
 
