@@ -33,12 +33,12 @@ const fillPathvcForm = async (formData) => {
     
     await page.select('select[name="Sector"]', selectedOption.value);
 
-    await page.type('input[name="Video-pitch-URL"]', formData.founder_video);
+    await page.type('input[name="Video-pitch-URL"]', formData.founder_video_url);
     await page.type('input[name="Pitch-Deck-URL"]', formData.pitch_deck);
     await page.screenshot({ path: 'pathvc_form_before_submission.png', fullPage: true });
 
     // Отправка формы
-    await page.click('input[type="submit"]');
+    // await page.click('input[type="submit"]');
     await new Promise(resolve => setTimeout(resolve, 2000));
     await page.screenshot({ path: 'pathvc_form_after_submission.png', fullPage: true });
     await browser.close();

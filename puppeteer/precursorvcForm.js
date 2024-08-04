@@ -63,7 +63,7 @@ const fillForm = async (formData) => {
     await page.type('#input_2_16', formData.pre_money_valuation);
     await page.screenshot({ path: 'precursorvc_form_before_submission.png', fullPage: true });
     
-    await page.click('#gform_submit_button_2');
+    // await page.click('#gform_submit_button_2');
     await new Promise(resolve => setTimeout(resolve, 2000));
     await page.screenshot({ path: 'precursorvc_form_after_submission.png', fullPage: true });
     await browser.close();
