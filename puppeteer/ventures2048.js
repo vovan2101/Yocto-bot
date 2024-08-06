@@ -1,6 +1,6 @@
 const puppeteer = require('puppeteer');
 
-const fillVentures2024 = async (formData) => {
+const fillVentures2048 = async (formData) => {
     if (!formData) {
         console.error('No form data received');
         return;
@@ -8,7 +8,7 @@ const fillVentures2024 = async (formData) => {
 
     console.log('Filling 2048 Ventures form with data:', formData);
 
-    const browser = await puppeteer.launch({ headless: false });
+    const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
     await page.goto('https://airtable.com/appV89PYGo3zN47f9/shr2lijl8JHhvxghK?prefill_Introd+By+Type=Direct&hide_Introd+By+Type=true', { waitUntil: 'networkidle2' });
 
@@ -39,10 +39,10 @@ const fillVentures2024 = async (formData) => {
 
         switch (i) {
             case 0:
-                value = formData.your_name;
+                value = `${formData.first_name} ${formData.last_name}`;
                 break;
             case 1:
-                value = formData.your_email;
+                value = formData.email;
                 break;
             case 2:
                 value = formData.company_name;
@@ -51,10 +51,10 @@ const fillVentures2024 = async (formData) => {
                 value = formData.company_website;
                 break;
             case 4:
-                value = formData.twitter_description;
+                value = formData.company_description;
                 break;
             case 5:
-                value = formData.deck_link;
+                value = formData.pitch_deck;
                 break;
             case 6:
                 value = formData.ceo_linkedin;
@@ -63,16 +63,20 @@ const fillVentures2024 = async (formData) => {
                 value = formData.cto_linkedin;
                 break;
             case 8:
-                value = formData.founder_video;
+                value = formData.founder_video_url;
                 break;
             case 9:
                 value = formData.date_founded;
+                if (value) {
+                    const [year, month, day] = value.split('-');
+                    value = `${day}.${month}.${year}`;
+                }
                 break;
             case 10:
                 value = formData.vision;
                 break;
             case 11:
-                value = formData.capital_raised;
+                value = formData.raising_amount;
                 break;
             case 12:
                 value = formData.capital_to_raise;
@@ -80,13 +84,9 @@ const fillVentures2024 = async (formData) => {
         }
 
         if (field && value) {
-            console.log(`Filling input field ${i} with value: ${value}`);
-            try {
-                await field.click({ clickCount: 3 });
-                await field.type(value);
-            } catch (error) {
-                console.error(`Error filling input field ${i}:`, error);
-            }
+            await field.click({ clickCount: 3 });
+            await field.type(value);
+            
         }
     }
 
@@ -105,10 +105,24 @@ const fillVentures2024 = async (formData) => {
 
         switch (i) {
             case 0:
-                value = formData.location;
+                value = formData.specific_location;
                 break;
             case 1:
-                value = formData.vertical;
+                value = formData.industry;
+                if (value === 'AI / Machine Learning') {
+                    value = 'AI / ML';
+                }
+                
+                const allowedValues = [
+                    'AI / ML', 'AR / VR', 'Biotech', 'Blockchain', 'Climate', 'Marketplaces', 'Cyber Security', 
+                    'Developer Tools', 'Ecommerce Enablement', 'Enterprise', 'FinTech', 'Healthcare', 
+                    'Industrial Manufacturing', 'Iot', 'Longevity', 'Robotics', 'SMB SaaS', 'Space Tech', 
+                    'Supply Chain', 'Gaming', 'Mobility'
+                ];
+        
+                if (!allowedValues.includes(value)) {
+                    value = 'Other';
+                }
                 break;
         }
 
@@ -129,9 +143,9 @@ const fillVentures2024 = async (formData) => {
 
     const submitButtonSelector = '.formSubmit .submitButton';
     await page.waitForSelector(submitButtonSelector);
-    await page.evaluate((selector) => {
-    document.querySelector(selector).click();
-    }, submitButtonSelector);
+    // await page.evaluate((selector) => {
+    // document.querySelector(selector).click();
+    // }, submitButtonSelector);
     await new Promise(resolve => setTimeout(resolve, 3000));
     await page.screenshot({ path: '2048_ventures_form_after_submission.png', fullPage: true });
     console.log('2048 Ventures form submitted successfully');
@@ -139,22 +153,4 @@ const fillVentures2024 = async (formData) => {
     await browser.close();
 };
 
-const formData = {
-    your_name: 'John Doe',
-    your_email: 'vladeliseykin2101@gmail.com',
-    company_name: 'Example Corp',
-    vertical: 'AI / ML',
-    company_website: 'https://example.com',
-    twitter_description: 'A short description of the company.',
-    deck_link: 'https://example.com/deck',
-    ceo_linkedin: 'https://linkedin.com/in/ceo',
-    cto_linkedin: 'https://linkedin.com/in/cto',
-    founder_video: 'https://youtube.com/example',
-    date_founded: '01.01.2020',
-    vision: 'Our vision is to dominate the market in 5 years.',
-    location: 'San Francisco / Bay Area',
-    capital_raised: '100000',
-    capital_to_raise: '500000',
-};
-
-fillVentures2024(formData);
+module.exports = fillVentures2048;

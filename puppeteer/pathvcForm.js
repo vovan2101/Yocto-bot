@@ -24,12 +24,17 @@ const fillPathvcForm = async (formData) => {
     await page.type('input[name="One-line-Description"]', formData.company_description);
     await page.type('input[name="url"]', formData.company_website);
 
+    let industry = formData.industry;
+    if (industry.includes('Fin Tech')) {
+        industry = 'Financial Tech';
+    }
+
     const industryOptions = await page.evaluate(() => {
         const options = Array.from(document.querySelectorAll('select[name="Sector"] option'));
         return options.map(option => ({ text: option.textContent.trim(), value: option.value }));
     });
 
-    const selectedOption = industryOptions.find(option => option.text === formData.industry) || industryOptions.find(option => option.text === 'Other');
+    const selectedOption = industryOptions.find(option => option.text === industry) || industryOptions.find(option => option.text === 'Other');
     
     await page.select('select[name="Sector"]', selectedOption.value);
 

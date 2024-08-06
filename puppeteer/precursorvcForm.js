@@ -52,11 +52,13 @@ const fillForm = async (formData) => {
         "S-Corp": 5,
         "Non-profit": 6
     };
-    for (const structure of formData.legal_structure) {
+    const structures = Array.isArray(formData.legal_structure) ? formData.legal_structure : [formData.legal_structure];
+
+    for (const structure of structures) {
         if (legalStructures.hasOwnProperty(structure)) {
             await page.click(`#choice_2_18_${legalStructures[structure]}`);
-        }
     }
+}
 
     await page.select('#input_2_13', formData.raising_round);
     await page.type('#input_2_15', formData.raising_amount);

@@ -33,7 +33,7 @@ const fillBoostVcForm = async (formData) => {
     await page.screenshot({ path: 'boostvc_form_before_submission.png', fullPage: true });
 
     await new Promise(resolve => setTimeout(resolve, 5000));
-    await page.click('button[data-cy="button-component"]');
+    // await page.click('button[data-cy="button-component"]');
     await new Promise(resolve => setTimeout(resolve, 2000));
     await page.screenshot({ path: 'boostvc_form_after_submission.png', fullPage: true });
     await browser.close();
