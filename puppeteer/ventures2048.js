@@ -31,7 +31,6 @@ const fillVentures2048 = async (formData) => {
     ];
 
     const inputFields = await Promise.all(inputSelectors.map(selector => page.$(selector)));
-    console.log('Input fields found:', inputFields.length);
 
     for (let i = 0; i < inputFields.length; i++) {
         const field = inputFields[i];
@@ -97,7 +96,6 @@ const fillVentures2048 = async (formData) => {
     ];
 
     const dropdownFields = await Promise.all(dropdownSelectors.map(selector => page.$(selector)));
-    console.log('Dropdown fields found:', dropdownFields.length);
 
     for (let i = 0; i < dropdownFields.length; i++) {
         const field = dropdownFields[i];
@@ -127,7 +125,6 @@ const fillVentures2048 = async (formData) => {
         }
 
         if (field && value) {
-            console.log(`Filling dropdown field ${i} with value: ${value}`);
             try {
                 await field.click();
                 await new Promise(resolve => setTimeout(resolve, 1000));

@@ -4,6 +4,7 @@ const precursorvcForm = require('../puppeteer/precursorvcForm');
 const pathvcForm = require('../puppeteer/pathvcForm');
 const boostVcForm = require('../puppeteer/boostVcForm');
 const ventures2048 = require('../puppeteer/ventures2048');
+const everywhereVcForm = require('../puppeteer/everywhereVcForm');
 
 const client = new KafkaClient({ kafkaHost: 'localhost:9092' });
 const consumer = new Consumer(
@@ -12,7 +13,8 @@ const consumer = new Consumer(
         { topic: 'precursorvc-form', partition: 0 },
         { topic: 'pathvc-form', partition: 0 },
         { topic: 'boost-vc-form', partition: 0 },
-        { topic: 'ventures-2048', partition: 0 }
+        { topic: 'ventures-2048', partition: 0 },
+        { topic: 'everywhere-vc-form', partition: 0 },
     ],
     { autoCommit: true }
 );
@@ -37,6 +39,8 @@ consumer.on('message', async (message) => {
             await boostVcForm(formData);
         } else if (message.topic === 'ventures-2048') {
             await ventures2048(formData);
+        } else if (message.topic === 'everywhere-vc-form') {
+            await everywhereVcForm(formData);
         }
     } else {
         console.error('No form data received or unknown topic');
