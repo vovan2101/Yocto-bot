@@ -39,7 +39,13 @@ const fillForm = async (formData) => {
     await page.select('#input_2_7', selectedOption.value);
     await page.type('#input_2_6', formData.company_website);
     await page.type('#input_2_11', formData.pitch_deck);
-    await page.select('#input_2_12', formData.headquartered);
+    let headquarteredValue;
+    if (formData.headquartered === 'US' || formData.headquartered === 'Canada/Mexico') {
+        headquarteredValue = 'North America';
+    } else {
+        headquarteredValue = 'Outside of North America';
+    }
+    await page.select('#input_2_12', headquarteredValue);
     await page.type('#input_2_17', formData.operating_country);
 
     // Обработка чекбоксов для Legal Structure

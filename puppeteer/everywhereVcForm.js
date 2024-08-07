@@ -8,7 +8,7 @@ const fillEverywhereVcForm = async (formData) => {
 
     console.log('Filling Everywhere VC form with data:', formData);
 
-    const browser = await puppeteer.launch({ headless: false });
+    const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
     await page.goto('https://everywhere.vc', { waitUntil: 'networkidle2' });
 
@@ -47,8 +47,6 @@ const fillEverywhereVcForm = async (formData) => {
     if (cookieCloseButton) {
         await cookieCloseButton.click();
         console.log('Cookie consent closed');
-    } else {
-        console.error('Cookie consent close button not found');
     }
 
  // Переключение на iframe
@@ -67,7 +65,6 @@ const fillEverywhereVcForm = async (formData) => {
 ];
 
 const inputFields = await Promise.all(inputSelectors.map(selector => frame.$(selector)));
-console.log('Input fields found:', inputFields.length);
 
 for (let i = 0; i < inputFields.length; i++) {
     const field = inputFields[i];
