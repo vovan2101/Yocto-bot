@@ -29,24 +29,28 @@ const fillForm = async (formData) => {
     
     await page.type('#input_2_4', formData.company_name);
     await page.type('#input_2_5', formData.company_description);
+    if (formData.industry === 'HR / hiring / employment') {
+        formData.industry = 'HR Tech';
+    }
+    
     const industryOptions = await page.evaluate(() => {
         const options = Array.from(document.querySelectorAll('#input_2_7 option'));
         return options.map(option => ({ text: option.textContent.trim(), value: option.value }));
     });
-
+    
     const selectedOption = industryOptions.find(option => option.text === formData.industry) || industryOptions.find(option => option.text === 'Other');
     
     await page.select('#input_2_7', selectedOption.value);
     await page.type('#input_2_6', formData.company_website);
     await page.type('#input_2_11', formData.pitch_deck);
     let headquarteredValue;
-    if (formData.headquartered === 'US' || formData.headquartered === 'Canada/Mexico') {
+    if (formData.headquartered === 'US' || formData.headquartered === 'Canada' || formData.headquartered === 'Mexico') {
         headquarteredValue = 'North America';
     } else {
         headquarteredValue = 'Outside of North America';
     }
     await page.select('#input_2_12', headquarteredValue);
-    await page.type('#input_2_17', formData.operating_country);
+    await page.type('#input_2_17', formData.specific_location);
 
     // Обработка чекбоксов для Legal Structure
     const legalStructures = {

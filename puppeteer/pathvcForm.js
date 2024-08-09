@@ -25,7 +25,13 @@ const fillPathvcForm = async (formData) => {
     await page.type('input[name="url"]', formData.company_website);
 
     let industry = formData.industry;
-    if (industry.includes('Fin Tech')) {
+    if (industry === 'AI / ML') {
+        industry = 'AI / Machine Learning';
+    } else if (industry === 'Real Estate / Housing') {
+        industry = 'Property Tech';
+    } else if (industry === 'Legal / government / regulation') {
+        industry = 'Legal Tech';
+    } else if (industry.includes('Fin Tech')) {
         industry = 'Financial Tech';
     }
 

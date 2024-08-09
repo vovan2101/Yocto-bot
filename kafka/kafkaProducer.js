@@ -13,7 +13,7 @@ const producer = new Producer(client);
 // });
 
 const sendMessage = (message) => {
-    const topics = ['precursorvc-form', 'pathvc-form', 'boost-vc-form', 'ventures-2048', 'everywhere-vc-form', 'wischoff-form'];
+    const topics = ['precursorvc-form', 'pathvc-form', 'boost-vc-form', 'ventures-2048', 'everywhere-vc-form', 'wischoff-form', 'incisive-ventures-form'];
 
     topics.forEach((topic) => {
         const payloads = [

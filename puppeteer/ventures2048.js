@@ -107,8 +107,20 @@ const fillVentures2048 = async (formData) => {
                 break;
             case 1:
                 value = formData.industry;
-                if (value === 'AI / Machine Learning') {
-                    value = 'AI / ML';
+                if (value === 'Blockchain / Crypto / NFT / Web3') {
+                    value = 'Blockchain';
+                } else if (value === 'Metaverse - AR/VR/ Other') {
+                    value = 'AR / VR';
+                } else if (value === 'Cleantech / Climate / Sustainability') {
+                    value = 'Climate';
+                } else if (value === 'Manufacturing') {
+                    value = 'Industrial Manufacturing';
+                } else if (value === 'Electronics / IOT') {
+                    value = 'Iot';
+                } else if (value === 'Robotics / drones') {
+                    value = 'Robotics';
+                } else if (value === 'Supply Chain: Logistics / Shipping / Delivery') {
+                    value = 'Supply Chain';
                 }
                 
                 const allowedValues = [

@@ -17,7 +17,7 @@ const fillBoostVcForm = async (formData) => {
 
     await page.type('input[data-cy="input-component"][aria-label="What is your full name?"]', `${formData.first_name} ${formData.last_name}`);
     await page.type('input[data-cy="input-component"][aria-label="What is your email address?"]', formData.email);
-    await page.type('input[data-cy="input-component"][aria-label="Where are you located? (City, State/Country)"]', formData.operating_country);
+    await page.type('input[data-cy="input-component"][aria-label="Where are you located? (City, State/Country)"]', formData.specific_location);
     await page.type('textarea[data-cy="text-area"][aria-label="In a few sentences, describe your idea / company."]', formData.company_description);
     await page.type('textarea[data-cy="text-area"][aria-label="In a few sentences, tell us why you / your team are awesome."]', formData.team_description);
     await page.type('textarea[data-cy="text-area"][aria-label="Provide a link to you / your team\'s LinkedIn profiles."]', `${formData.ceo_linkedin} ${formData.linkedin_profiles}`);
