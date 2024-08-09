@@ -8,7 +8,7 @@ const fillForm = async (formData) => {
 
     console.log('Filling Precursorvc form with data:', formData);
 
-    const browser = await puppeteer.launch({ headless: false });
+    const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
     await page.goto('https://precursorvc.com/startup/', { waitUntil: 'networkidle2' });
 
@@ -71,7 +71,7 @@ const fillForm = async (formData) => {
         await page.click(`#choice_2_18_${legalStructures[structure]}`);
         if (structure === "Other" && formData.other_legal_structure) {
             // Если выбран Other, вводим значение в соответствующее поле
-            await page.type('#other_legal_structure_input', formData.other_legal_structure);
+            await page.type('#input_2_18_other', formData.other_legal_structure);
         }
     }
 
