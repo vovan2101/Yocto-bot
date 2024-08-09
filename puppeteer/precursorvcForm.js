@@ -8,7 +8,7 @@ const fillForm = async (formData) => {
 
     console.log('Filling Precursorvc form with data:', formData);
 
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch({ headless: false });
     const page = await browser.newPage();
     await page.goto('https://precursorvc.com/startup/', { waitUntil: 'networkidle2' });
 
@@ -52,23 +52,28 @@ const fillForm = async (formData) => {
     await page.select('#input_2_12', headquarteredValue);
     await page.type('#input_2_17', formData.specific_location);
 
-    // Обработка чекбоксов для Legal Structure
-    const legalStructures = {
-        "Delaware C-Corp": 0,
-        "Canadian company": 1,
-        "B-Corp": 2,
-        "Public Benefit Corporation (PBC)": 3,
-        "LLC": 4,
-        "S-Corp": 5,
-        "Non-profit": 6
+   // Обработка поля Legal Structure
+   const legalStructures = {
+    "Delaware C-Corp": 0,
+    "Canadian company": 1,
+    "B-Corp": 2,
+    "Public Benefit Corporation (PBC)": 3,
+    "LLC": 4,
+    "S-Corp": 5,
+    "Non-profit": 6,
+    "Other": 7
     };
-    const structures = Array.isArray(formData.legal_structure) ? formData.legal_structure : [formData.legal_structure];
 
-    for (const structure of structures) {
-        if (legalStructures.hasOwnProperty(structure)) {
-            await page.click(`#choice_2_18_${legalStructures[structure]}`);
+    // Поскольку legal_structure не является массивом, просто проверяем его значение
+    const structure = formData.legal_structure;
+
+    if (legalStructures.hasOwnProperty(structure)) {
+        await page.click(`#choice_2_18_${legalStructures[structure]}`);
+        if (structure === "Other" && formData.other_legal_structure) {
+            // Если выбран Other, вводим значение в соответствующее поле
+            await page.type('#other_legal_structure_input', formData.other_legal_structure);
+        }
     }
-}
 
     await page.select('#input_2_13', formData.raising_round);
     await page.type('#input_2_15', formData.raising_amount);
@@ -76,7 +81,7 @@ const fillForm = async (formData) => {
     await page.screenshot({ path: 'precursorvc_form_before_submission.png', fullPage: true });
     
     // await page.click('#gform_submit_button_2');
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise(resolve => setTimeout(resolve, 10000));
     await page.screenshot({ path: 'precursorvc_form_after_submission.png', fullPage: true });
     await browser.close();
     console.log('Prescurorvc Form submitted successfully');

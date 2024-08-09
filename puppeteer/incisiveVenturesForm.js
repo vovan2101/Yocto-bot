@@ -8,7 +8,7 @@ const fillIncisiveVenturesForm = async (formData) => {
 
     console.log('Filling Incisive Ventures form with data:', formData);
 
-    const browser = await puppeteer.launch({ headless: false });
+    const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
     await page.goto('https://airtable.com/appAMCFupamv6Euf8/shrKq915ChZNzweep', { waitUntil: 'networkidle2' });
 
@@ -127,7 +127,9 @@ const fillIncisiveVenturesForm = async (formData) => {
                 value = formData.headquartered;
                 if (value === 'US') {
                     value = 'United States of America';
-                } else if (value === 'Mexico') {
+                } else if (value === 'Asia - India / Pakistan / Bangladesh') {
+                    value = 'Asia - India / Pakistan';
+                } else if (value === 'Mexico' || value === 'Australia / New Zealand') {
                     value = 'Other';
                 }
                 break;
@@ -200,7 +202,7 @@ const fillIncisiveVenturesForm = async (formData) => {
     // await page.evaluate((selector) => {
     // document.querySelector(selector).click();
     // }, submitButtonSelector);
-    await new Promise(resolve => setTimeout(resolve, 60000));
+    await new Promise(resolve => setTimeout(resolve, 3000));
     await page.screenshot({ path: 'incisive_ventures_form_after_submission.png', fullPage: true });
     console.log('Incisive Ventures form submitted successfully');
 
