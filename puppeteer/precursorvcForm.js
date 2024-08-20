@@ -29,18 +29,32 @@ const fillForm = async (formData) => {
     
     await page.type('#input_2_4', formData.company_name);
     await page.type('#input_2_5', formData.company_description);
-    if (formData.industry === 'HR / hiring / employment') {
-        formData.industry = 'HR Tech';
+    const industries = formData.industryString.split('; ');
+
+    let selectedIndustry = 'Other'; // По умолчанию выбираем 'Other'
+
+    // Проверяем каждое значение из списка, пока не найдём совпадение
+    for (let industry of industries) {
+        if (industry === 'HR / hiring / employment') {
+            selectedIndustry = 'HR Tech';
+            break;
+        }
+
+        const matchedOption = await page.evaluate((industry) => {
+            const options = Array.from(document.querySelectorAll('#input_2_7 option'));
+            return options.find(option => option.textContent.trim() === industry) !== undefined;
+        }, industry);
+
+        if (matchedOption) {
+            selectedIndustry = industry;
+            break;
+        }
     }
+
+    // Устанавливаем значение для formData.industry
+    formData.industry = selectedIndustry;
     
-    const industryOptions = await page.evaluate(() => {
-        const options = Array.from(document.querySelectorAll('#input_2_7 option'));
-        return options.map(option => ({ text: option.textContent.trim(), value: option.value }));
-    });
-    
-    const selectedOption = industryOptions.find(option => option.text === formData.industry) || industryOptions.find(option => option.text === 'Other');
-    
-    await page.select('#input_2_7', selectedOption.value);
+    await page.select('#input_2_7', selectedIndustry);
     await page.type('#input_2_6', formData.company_website);
     await page.type('#input_2_11', formData.pitch_deck);
     let headquarteredValue;

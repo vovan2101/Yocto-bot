@@ -46,7 +46,6 @@ const fillEverywhereVcForm = async (formData) => {
     const cookieCloseButton = await page.$(cookieCloseButtonSelector);
     if (cookieCloseButton) {
         await cookieCloseButton.click();
-        console.log('Cookie consent closed');
     }
 
  // Переключение на iframe
@@ -95,7 +94,6 @@ for (let i = 0; i < inputFields.length; i++) {
     }
 
     if (field && value) {
-        console.log(`Typing into field ${i + 1} with value: ${value}`);
         await field.click({ clickCount: 3 });
         await field.type(value);
     }

@@ -7,6 +7,7 @@ const ventures2048 = require('../puppeteer/ventures2048');
 const everywhereVcForm = require('../puppeteer/everywhereVcForm');
 const wischoffForm = require('../puppeteer/wischoffForm');
 const incisiveVenturesForm = require('../puppeteer/incisiveVenturesForm');
+const hustleFundForm = require('../puppeteer/hustleFundForm');
 
 const client = new KafkaClient({ kafkaHost: 'localhost:9092' });
 const consumer = new Consumer(
@@ -19,6 +20,7 @@ const consumer = new Consumer(
         { topic: 'everywhere-vc-form', partition: 0 },
         { topic: 'wischoff-form', partition: 0 },
         { topic: 'incisive-ventures-form', partition: 0 },
+        { topic: 'hustle-fund-form', partition: 0 },
     ],
     { autoCommit: true }
 );
@@ -49,6 +51,8 @@ consumer.on('message', async (message) => {
             await wischoffForm(formData);
         } else if (message.topic === 'incisive-ventures-form') {
             await incisiveVenturesForm(formData);
+        } else if (message.topic === 'hustle-fund-form') {
+            await hustleFundForm(formData);
         }
     } else {
         console.error('No form data received or unknown topic');

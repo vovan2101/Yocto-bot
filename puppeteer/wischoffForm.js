@@ -61,13 +61,23 @@ const fillWischoffForm = async (formData) => {
 
         switch (i) {
             case 0:
-                value = formData.industry;
-                if (value === 'FinTech') {
+            value = 'Other'; // По умолчанию выбираем 'Other'
+            const industries = formData.industryString.split('; ');
+
+            // Проверяем каждое значение из списка, пока не найдём совпадение
+            for (let industry of industries) {
+                if (industry === 'FinTech') {
                     value = formData.fintech_type;
-                } else if (!['Enterprise', 'Consumer', 'Vertical Saas', 'Cloud Infrastructure', 'B2B Marketplace', 'Healthcare'].includes(value)) {
-                    value = 'Other';
+                    break;
+                } else if (industry === 'Cloudtech and DevOps') {
+                    value = 'Cloud infrastructure';
+                    break;
+                } else if (['Enterprise', 'Consumer', 'Vertical Saas', 'Cloud Infrastructure', 'B2B Marketplace', 'Healthcare'].includes(industry)) {
+                    value = industry;
+                    break;
                 }
-                break;
+            }
+            break
             case 1:
                 value = formData.headquartered;
                 value = value === 'US' ? 'US' : 'International';

@@ -12,6 +12,12 @@ const fillVentures2048 = async (formData) => {
     const page = await browser.newPage();
     await page.goto('https://airtable.com/appV89PYGo3zN47f9/shr2lijl8JHhvxghK?prefill_Introd+By+Type=Direct&hide_Introd+By+Type=true', { waitUntil: 'networkidle2' });
 
+    const cookieCloseButtonSelector = '.onetrust-close-btn-handler';
+    const cookieCloseButton = await page.$(cookieCloseButtonSelector);
+    if (cookieCloseButton) {
+        await cookieCloseButton.click();
+    }
+
     await page.waitForSelector('.formFieldAndSubmitContainer');
 
     const inputSelectors = [
@@ -99,40 +105,53 @@ const fillVentures2048 = async (formData) => {
 
     for (let i = 0; i < dropdownFields.length; i++) {
         const field = dropdownFields[i];
-        let value;
+        let value = '';
 
         switch (i) {
             case 0:
                 value = formData.specific_location;
                 break;
             case 1:
-                value = formData.industry;
-                if (value === 'Blockchain / Crypto / NFT / Web3') {
-                    value = 'Blockchain';
-                } else if (value === 'Metaverse - AR/VR/ Other') {
-                    value = 'AR / VR';
-                } else if (value === 'Cleantech / Climate / Sustainability') {
-                    value = 'Climate';
-                } else if (value === 'Manufacturing') {
-                    value = 'Industrial Manufacturing';
-                } else if (value === 'Electronics / IOT') {
-                    value = 'Iot';
-                } else if (value === 'Robotics / drones') {
-                    value = 'Robotics';
-                } else if (value === 'Supply Chain: Logistics / Shipping / Delivery') {
-                    value = 'Supply Chain';
-                }
-                
                 const allowedValues = [
                     'AI / ML', 'AR / VR', 'Biotech', 'Blockchain', 'Climate', 'Marketplaces', 'Cyber Security', 
                     'Developer Tools', 'Ecommerce Enablement', 'Enterprise', 'FinTech', 'Healthcare', 
                     'Industrial Manufacturing', 'Iot', 'Longevity', 'Robotics', 'SMB SaaS', 'Space Tech', 
                     'Supply Chain', 'Gaming', 'Mobility'
                 ];
-        
-                if (!allowedValues.includes(value)) {
-                    value = 'Other';
+            
+                const industries = formData.industryString.split('; ');
+            
+                value = 'Other'; // По умолчанию выбираем 'Other'
+            
+                // Проверяем каждое значение из списка, пока не найдём совпадение
+                for (let industry of industries) {
+                    if (industry === 'Blockchain / Crypto / NFT / Web3') {
+                        value = 'Blockchain';
+                        break;
+                    } else if (industry === 'Metaverse - AR/VR/ Other') {
+                        value = 'AR / VR';
+                        break;
+                    } else if (industry === 'Cleantech / Climate / Sustainability') {
+                        value = 'Climate';
+                        break;
+                    } else if (industry === 'Manufacturing') {
+                        value = 'Industrial Manufacturing';
+                        break;
+                    } else if (industry === 'Electronics / IOT') {
+                        value = 'Iot';
+                        break;
+                    } else if (industry === 'Robotics / drones') {
+                        value = 'Robotics';
+                        break;
+                    } else if (industry === 'Supply Chain: Logistics / Shipping / Delivery') {
+                        value = 'Supply Chain';
+                        break;
+                    } else if (allowedValues.includes(industry)) {
+                        value = industry;
+                        break;
+                    }
                 }
+            
                 break;
         }
 

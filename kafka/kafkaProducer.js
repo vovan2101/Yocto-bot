@@ -4,16 +4,16 @@ const { KafkaClient, Producer } = kafka;
 const client = new KafkaClient({ kafkaHost: 'localhost:9092' });
 const producer = new Producer(client);
 
-// producer.on('ready', () => {
-//     console.log('Kafka producer is connected and ready.');
-// });
+producer.on('ready', () => {
+    console.log('Kafka producer is connected and ready.');
+});
 
-// producer.on('error', (error) => {
-//     console.error('Error in Kafka producer', error);
-// });
+producer.on('error', (error) => {
+    console.error('Error in Kafka producer', error);
+});
 
 const sendMessage = (message) => {
-    const topics = ['precursorvc-form', 'pathvc-form', 'boost-vc-form', 'ventures-2048', 'everywhere-vc-form', 'wischoff-form', 'incisive-ventures-form'];
+    const topics = ['precursorvc-form', 'pathvc-form', 'boost-vc-form', 'ventures-2048', 'everywhere-vc-form', 'wischoff-form', 'incisive-ventures-form', 'hustle-fund-form'];
 
     topics.forEach((topic) => {
         const payloads = [

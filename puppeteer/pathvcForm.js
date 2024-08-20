@@ -24,25 +24,41 @@ const fillPathvcForm = async (formData) => {
     await page.type('input[name="One-line-Description"]', formData.company_description);
     await page.type('input[name="url"]', formData.company_website);
 
-    let industry = formData.industry;
-    if (industry === 'AI / ML') {
-        industry = 'AI / Machine Learning';
-    } else if (industry === 'Real Estate / Housing') {
-        industry = 'Property Tech';
-    } else if (industry === 'Legal / government / regulation') {
-        industry = 'Legal Tech';
-    } else if (industry.includes('Fin Tech')) {
-        industry = 'Financial Tech';
+    const industries = formData.industryString.split('; ');
+
+    let selectedIndustryValue = 'Other'; // По умолчанию выбираем 'Other'
+
+    // Проверяем каждое значение из списка, пока не найдём совпадение
+    for (let industry of industries) {
+        if (industry === 'AI / ML') {
+            selectedIndustryValue = 'Another option';
+            break;
+        } else if (industry === 'Real Estate / Housing') {
+            selectedIndustryValue = 'Property Tech';
+            break;
+        } else if (industry === 'Legal / government / regulation') {
+            selectedIndustryValue = 'Legal Tech';
+            break;
+        } else if (industry.includes('Fin Tech')) {
+            selectedIndustryValue = 'Financial Tech';
+            break;
+        }
+
+        const matchedValue = await page.evaluate((industry) => {
+            const options = Array.from(document.querySelectorAll('select[name="Sector"] option'));
+            const matched = options.find(option => option.textContent.trim() === industry);
+            return matched ? matched.value : null;
+        }, industry);
+
+        if (matchedValue) {
+            selectedIndustryValue = matchedValue;
+            break;
+        }
     }
 
-    const industryOptions = await page.evaluate(() => {
-        const options = Array.from(document.querySelectorAll('select[name="Sector"] option'));
-        return options.map(option => ({ text: option.textContent.trim(), value: option.value }));
-    });
+    // Используем значение `value` для выбора в форме
+    await page.select('select[name="Sector"]', selectedIndustryValue);
 
-    const selectedOption = industryOptions.find(option => option.text === industry) || industryOptions.find(option => option.text === 'Other');
-    
-    await page.select('select[name="Sector"]', selectedOption.value);
 
     await page.type('input[name="Video-pitch-URL"]', formData.founder_video_url);
     await page.type('input[name="Pitch-Deck-URL"]', formData.pitch_deck);
