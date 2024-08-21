@@ -8,6 +8,7 @@ const everywhereVcForm = require('../puppeteer/everywhereVcForm');
 const wischoffForm = require('../puppeteer/wischoffForm');
 const incisiveVenturesForm = require('../puppeteer/incisiveVenturesForm');
 const hustleFundForm = require('../puppeteer/hustleFundForm');
+const libertyVenturesForm = require('../puppeteer/libertyVenturesForm');
 
 const client = new KafkaClient({ kafkaHost: 'localhost:9092' });
 const consumer = new Consumer(
@@ -21,6 +22,7 @@ const consumer = new Consumer(
         { topic: 'wischoff-form', partition: 0 },
         { topic: 'incisive-ventures-form', partition: 0 },
         { topic: 'hustle-fund-form', partition: 0 },
+        { topic: 'liberty-ventures-form', partition: 0 },
     ],
     { autoCommit: true }
 );
@@ -37,22 +39,28 @@ consumer.on('message', async (message) => {
     }
 
     if (formData) {
-        if (message.topic === 'precursorvc-form') {
-            await precursorvcForm(formData);
-        } else if (message.topic === 'pathvc-form') {
-            await pathvcForm(formData);
-        } else if (message.topic === 'boost-vc-form') {
-            await boostVcForm(formData);
-        } else if (message.topic === 'ventures-2048') {
-            await ventures2048(formData);
-        } else if (message.topic === 'everywhere-vc-form') {
-            await everywhereVcForm(formData);
-        } else if (message.topic === 'wischoff-form') {
-            await wischoffForm(formData);
-        } else if (message.topic === 'incisive-ventures-form') {
-            await incisiveVenturesForm(formData);
-        } else if (message.topic === 'hustle-fund-form') {
-            await hustleFundForm(formData);
+        try {
+            if (message.topic === 'precursorvc-form') {
+                await precursorvcForm(formData);
+            } else if (message.topic === 'pathvc-form') {
+                await pathvcForm(formData);
+            } else if (message.topic === 'boost-vc-form') {
+                await boostVcForm(formData);
+            } else if (message.topic === 'ventures-2048') {
+                await ventures2048(formData);
+            } else if (message.topic === 'everywhere-vc-form') {
+                await everywhereVcForm(formData);
+            } else if (message.topic === 'wischoff-form') {
+                await wischoffForm(formData);
+            } else if (message.topic === 'incisive-ventures-form') {
+                await incisiveVenturesForm(formData);
+            } else if (message.topic === 'hustle-fund-form') {
+                await hustleFundForm(formData);
+            } else if (message.topic === 'liberty-ventures-form') {
+                await libertyVenturesForm(formData);
+            }
+        } catch (error) {
+            console.error(`Error filling form for topic ${message.topic}:`, error);
         }
     } else {
         console.error('No form data received or unknown topic');
