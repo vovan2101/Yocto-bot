@@ -9,7 +9,7 @@ const fillLibertyVenturesForm = async (formData) => {
 
     console.log('Filling Liberty Ventures form with data:', formData);
 
-    const browser = await puppeteer.launch({ headless: false });
+    const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
     await page.goto('https://share.hsforms.com/1DHSuFcRRQTGI5MLAO8Pa6Aqg7u9', { waitUntil: 'networkidle2' });
 

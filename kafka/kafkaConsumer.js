@@ -9,6 +9,7 @@ const wischoffForm = require('../puppeteer/wischoffForm');
 const incisiveVenturesForm = require('../puppeteer/incisiveVenturesForm');
 const hustleFundForm = require('../puppeteer/hustleFundForm');
 const libertyVenturesForm = require('../puppeteer/libertyVenturesForm');
+const spatialCapitalForm = require('../puppeteer/spatialCapitalForm');
 
 const client = new KafkaClient({ kafkaHost: 'localhost:9092' });
 const consumer = new Consumer(
@@ -23,6 +24,7 @@ const consumer = new Consumer(
         { topic: 'incisive-ventures-form', partition: 0 },
         { topic: 'hustle-fund-form', partition: 0 },
         { topic: 'liberty-ventures-form', partition: 0 },
+        { topic: 'spatial-capital-form', partition: 0 },
     ],
     { autoCommit: true }
 );
@@ -58,6 +60,8 @@ consumer.on('message', async (message) => {
                 await hustleFundForm(formData);
             } else if (message.topic === 'liberty-ventures-form') {
                 await libertyVenturesForm(formData);
+            } else if (message.topic === 'spatial-capital-form') {
+                await spatialCapitalForm(formData);
             }
         } catch (error) {
             console.error(`Error filling form for topic ${message.topic}:`, error);
