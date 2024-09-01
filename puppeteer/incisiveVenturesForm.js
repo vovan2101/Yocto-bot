@@ -20,24 +20,19 @@ const fillIncisiveVenturesForm = async (formData) => {
 
     await page.waitForSelector('.formFieldAndSubmitContainer');
 
+    // Текстовые поля
     const inputSelectors = [
-        '.formFieldAndSubmitContainer .sharedFormField:nth-of-type(1) input',
-        '.formFieldAndSubmitContainer .sharedFormField:nth-of-type(2) input',
-        '.formFieldAndSubmitContainer .sharedFormField:nth-of-type(3) input',
-        '.formFieldAndSubmitContainer .sharedFormField:nth-of-type(4) input',
-        '.formFieldAndSubmitContainer .sharedFormField:nth-of-type(6) input',
-        '.formFieldAndSubmitContainer .sharedFormField:nth-of-type(7) input',
-        '.formFieldAndSubmitContainer .sharedFormField:nth-of-type(8) input',
-        '.formFieldAndSubmitContainer .sharedFormField:nth-of-type(9) input',
-        '.formFieldAndSubmitContainer .sharedFormField:nth-of-type(10) input',
-        '.cellContainer .contentEditableTextbox[contenteditable="true"]',
-        '.cellContainer .contentEditableTextbox[contenteditable="true"]',
-        '.formFieldAndSubmitContainer .sharedFormField:nth-of-type(19) input',
-        '.formFieldAndSubmitContainer .sharedFormField:nth-of-type(20) input',
-        '.cellContainer .contentEditableTextbox[contenteditable="true"]',
-        '.formFieldAndSubmitContainer .cell.formCell[data-columntype="richText"] .ql-container',
-        '.cellContainer .contentEditableTextbox[contenteditable="true"]',
-
+        '.sharedFormField:nth-of-type(1) input', // First Name
+        '.sharedFormField:nth-of-type(2) input', // Last Name
+        '.sharedFormField:nth-of-type(3) input', // Startup Name
+        '.sharedFormField:nth-of-type(4) input', // Founder Email
+        '.sharedFormField:nth-of-type(6) input', // Founder 1 LinkedIn
+        '.sharedFormField:nth-of-type(7) input', // Founder 2 LinkedIn
+        '.sharedFormField:nth-of-type(8) input', // Founder 3 LinkedIn
+        '.sharedFormField:nth-of-type(9) input', // Pitch Deck URL
+        '.sharedFormField:nth-of-type(10) input', // Website link for startup
+        '.sharedFormField:nth-of-type(19) input', // Raising Amount
+        '.sharedFormField:nth-of-type(20) input'  // Post-money valuation
     ];
 
     const inputFields = await Promise.all(inputSelectors.map(selector => page.$(selector)));
@@ -63,10 +58,10 @@ const fillIncisiveVenturesForm = async (formData) => {
                 value = formData.ceo_linkedin;
                 break;
             case 5:
-                value = formData.cto_linkedin;
+                value = formData.founder2_linkedin;
                 break;
             case 6:
-                value = '';
+                value = formData.founder3_linkedin;
                 break;
             case 7:
                 value = formData.pitch_deck;
@@ -75,45 +70,71 @@ const fillIncisiveVenturesForm = async (formData) => {
                 value = formData.company_website;
                 break;
             case 9:
-                value = formData.pitch_description;
-                break;
-            case 10:
-                value = formData.company_solution;
-                break;
-            case 11:
                 value = formData.capital_to_raise;
                 break;
-            case 12:
+            case 10:
                 value = formData.post_money_valuation;
-                break;
-            case 13:
-                value = formData.raising_amount;
-                break;
-            case 14:
-                value = '';
-                break;
-            case 15:
-                value = '';
                 break;
         }
 
         if (field && value) {
-            await field.click({ clickCount: 3 }).catch(error => console.error(`Error clicking field ${i}:`, error));
-            await field.type(value).catch(error => console.error(`Error typing in field ${i}:`, error));
+            await field.click({ clickCount: 3 });
+            await field.type(value);
         }
     }
 
-    const dropdownSelectors = [
-        '.formFieldAndSubmitContainer .sharedFormField:nth-of-type(5) [data-testid="autocomplete-button"]', // entrepreneurial_experience
-        '.formFieldAndSubmitContainer .sharedFormField:nth-of-type(12) [data-testid="autocomplete-button"]', // location
-        '.formFieldAndSubmitContainer .sharedFormField:nth-of-type(14) [data-testid="autocomplete-button"]', // primary_product
-        '.formFieldAndSubmitContainer .sharedFormField:nth-of-type(15) [data-testid="autocomplete-button"]', // industry
-        '.formFieldAndSubmitContainer .sharedFormField:nth-of-type(16) [data-testid="autocomplete-button"]', // product_status
-        '.formFieldAndSubmitContainer .sharedFormField:nth-of-type(17) [data-testid="autocomplete-button"]', // revenue
-        '.formFieldAndSubmitContainer .sharedFormField:nth-of-type(18) [data-testid="autocomplete-button"]', // raising_round
-        '.formFieldAndSubmitContainer .sharedFormField:nth-of-type(23) [data-testid="autocomplete-button"]', // share_startup
-        '.formFieldAndSubmitContainer .sharedFormField:nth-of-type(24) [data-testid="autocomplete-button"]', // share_startup
+    // Многострочные текстовые поля
+    const contentEditableSelectors = [
+        '.sharedFormField:nth-of-type(11) .contentEditableTextbox', // Elevator pitch
+        '.sharedFormField:nth-of-type(13) .contentEditableTextbox', // In one or two sentences, what is your solution? 
+        '.sharedFormField:nth-of-type(21) .contentEditableTextbox', // Total amount of prior financing
+        '.sharedFormField:nth-of-type(22) .ql-editor',              // Investors participating
+        '.sharedFormField:nth-of-type(25) .contentEditableTextbox'  // Anything else you want us to know
     ];
+
+    const contentEditableFields = await Promise.all(contentEditableSelectors.map(selector => page.$(selector)));
+
+    for (let i = 0; i < contentEditableFields.length; i++) {
+        const field = contentEditableFields[i];
+        let value;
+
+        switch (i) {
+            case 0:
+                value = formData.pitch_description;
+                break;
+            case 1:
+                value = formData.company_solution;
+                break;
+            case 2:
+                value = formData.raising_amount;
+                break;
+            case 3:
+                value = formData.investors_participating;
+                break;
+            case 4:
+                value = formData.want_us_to_know;
+                break;
+        }
+
+        if (field && value) {
+            await field.click();
+            await field.type(value);
+        }
+    }
+
+    // Выпадающие списки
+    const dropdownSelectors = [
+        '.sharedFormField:nth-of-type(5) [data-testid="autocomplete-button"]',   // Entrepreneurial experience
+        '.sharedFormField:nth-of-type(12) [data-testid="autocomplete-button"]',  // Where is your business incorporated? 
+        '.sharedFormField:nth-of-type(14) [data-testid="autocomplete-button"]',  // What is the primary product your startup is providing? 
+        '.sharedFormField:nth-of-type(15) [data-testid="autocomplete-button"]',  // industry
+        '.sharedFormField:nth-of-type(16) [data-testid="autocomplete-button"]',  // What is the status of your product?
+        '.sharedFormField:nth-of-type(17) [data-testid="autocomplete-button"]',  // Approximately how much revenue is your startup earning per month (in USD)?
+        '.sharedFormField:nth-of-type(18) [data-testid="autocomplete-button"]',  // What round are you raising? 
+        '.sharedFormField:nth-of-type(23) [data-testid="autocomplete-button"]',  // How did you hear about Incisive Ventures? 
+        '.sharedFormField:nth-of-type(24) [data-testid="autocomplete-button"]',  // Sometimes we meet companies that aren't a fit for us, but may be a fit for other venture funds we work with. If this is the case, would you like us to share your startup with them?
+    ];
+
     const dropdownFields = await Promise.all(dropdownSelectors.map(selector => page.$(selector)));
 
     for (let i = 0; i < dropdownFields.length; i++) {
@@ -136,9 +157,16 @@ const fillIncisiveVenturesForm = async (formData) => {
                 break;
             case 2:
                 if (typeof formData.productString === 'string' && formData.productString.length > 0) {
-                    value = formData.productString.split('; ')[0];
+                    const productValues = formData.productString.split('; ');
+                    for (let product of productValues) {
+                        await field.click();
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                        await page.keyboard.type(product);
+                        await page.keyboard.press('Enter');
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                    }
                 } else {
-                    value = ''; 
+                    value = '';
                 }
                 break;
             case 3:
@@ -158,31 +186,43 @@ const fillIncisiveVenturesForm = async (formData) => {
                     'Travel / Hospitality', 'General / Industry agnostic'
                 ];
             
-                // Нажимаем на селектор для каждого значения
+                let foundMatch = false;
+            
+                // Проходим по всем индустриям и выбираем только соответствующие allowedValues
                 for (let industry of industries) {
                     let value = 'Other'; // По умолчанию выбираем 'Other'
             
-                    if (industry === 'Social Media / Community / Networking') {
-                        value = 'Social media / Networking';
-
-                    } else if (industry === 'Augmented reality (AR)' || industry === 'Virtual reality (VR)' ) {
-                        value = 'Metaverse - AR/VR/ Other';
-
-                    } else if (allowedValues.includes(industry)) {
+                    if (allowedValues.includes(industry)) {
                         value = industry;
+                        foundMatch = true;
+                    } else if (industry === 'Social Media / Community / Networking') {
+                        value = 'Social media / Networking';
+                        foundMatch = true;
+                    } else if (industry === 'Augmented reality (AR)' || industry === 'Virtual reality (VR)') {
+                        value = 'Metaverse - AR/VR/ Other';
+                        foundMatch = true;
                     }
-                     
             
-                    // Нажимаем на селектор
+                    if (foundMatch) {
+                        // Нажимаем на селектор
+                        await field.click();
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+            
+                        // Вводим значение
+                        await page.keyboard.type(value);
+                        await page.keyboard.press('Enter');
+            
+                        // Добавляем небольшую задержку перед следующей итерацией
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                    }
+                }
+            
+                // Если нет совпадений, выбираем "Other" один раз
+                if (!foundMatch) {
                     await field.click();
                     await new Promise(resolve => setTimeout(resolve, 1000));
-            
-                    // Выбираем значение
-                    await page.keyboard.type(value);
+                    await page.keyboard.type('Other');
                     await page.keyboard.press('Enter');
-            
-                    // Добавляем небольшую задержку перед следующей итерацией
-                    await new Promise(resolve => setTimeout(resolve, 1000));
                 }
             
                 break;
@@ -194,7 +234,9 @@ const fillIncisiveVenturesForm = async (formData) => {
                     value = '< 1000';
                 } else if (formData.earning_amount === '$1000-$10,000' || formData.earning_amount === '$1000-$4,999') {
                     value = '1000 - 9,999';
-                } else if (formData.earning_amount === '$10,000+') {
+                } else if (formData.earning_amount === '$5,000-$10,000') {
+                    value = '5,000-10,000';
+                } else if (formData.earning_amount === '$10,001+') {
                     value = '10,000 - 49,999';
                 } 
                 break;
@@ -213,7 +255,7 @@ const fillIncisiveVenturesForm = async (formData) => {
                 value = 'Research/Search - google, etc.';
                 break;
             case 8:
-                value = 'Yes';
+                value = formData.share_submission;
                 break;
         }
 

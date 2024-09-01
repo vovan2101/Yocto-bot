@@ -64,7 +64,23 @@ const fillForm = async (formData) => {
         headquarteredValue = 'Outside of North America';
     }
     await page.select('#input_2_12', headquarteredValue);
-    await page.type('#input_2_17', formData.specific_location);
+
+    let locationValue;
+
+    if ([
+        'San Francisco / Bay Area', 'New York', 'Boston', 'Los Angeles',
+        'Austin', 'Denver', 'Utah', 'Chicago', 'Seattle', 'Atlanta',
+        'Philadelphia', 'US - Other'
+    ].includes(formData.specific_location)) {
+        locationValue = 'USA';
+    } else if (['Toronto', 'Montreal', 'Canada - Other'].includes(formData.specific_location)) {
+        locationValue = 'Canada';
+    } else if (formData.specific_location === 'Asia - India') {
+        locationValue = 'India';
+    } else {
+        locationValue = formData.other_specific_location;
+    }
+    await page.type('#input_2_17', locationValue);
 
    // Обработка поля Legal Structure
    const legalStructures = {

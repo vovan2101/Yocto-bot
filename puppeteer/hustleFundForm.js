@@ -10,7 +10,7 @@ const fillhustleFundForm = async (formData) => {
     console.log('Filling Hustle Fund form with data:', formData);
 
     const browser = await puppeteer.launch({
-        headless: true, // Открыть браузер в видимом режиме
+        headless: false, // Открыть браузер в видимом режиме
         args: [
             '--window-size=1920,1080' // Установить размер окна
         ]
@@ -234,29 +234,23 @@ const fillhustleFundForm = async (formData) => {
     
     // Если есть пропущенные бизнес-модели или "Other" присутствует в formData
     if (missingModels.length > 0 || businessModels.includes("Other")) {
-        // Находим и кликаем на поле "Other"
-        const otherSelector = 'div[aria-label="Enter the input field to type your answer. Use \'enter\' to confirm"]'; // Используем aria-label
-        let otherCheckbox = await page.$(otherSelector);
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        await page.keyboard.press('h');
+        await new Promise(resolve => setTimeout(resolve, 1000));
     
-        if (otherCheckbox) {
-            await otherCheckbox.evaluate(el => el.scrollIntoView({ block: 'center', inline: 'center' }));
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            await otherCheckbox.click();
+        // Собираем все значения для поля "Other"
+        let otherValues = [...missingModels];
+        if (formData.other_business_model) {
+            otherValues.push(formData.other_business_model); // Добавляем значение из other_business_model
+        }
     
-            // Собираем все значения для поля "Other"
-            let otherValues = [...missingModels];
-            if (formData.other_business_model) {
-                otherValues.push(formData.other_business_model); // Добавляем значение из other_business_model
-            }
-    
-            // Вводим значения в поле "Other"
-            const otherInputSelector = 'div[data-qa="choice-7-readable-element"]';
-            const otherInput = await page.$(otherInputSelector);
-            if (otherInput) {
-                await otherInput.type(otherValues.join(', ')); // Вписываем все значения через запятую
-                await new Promise(resolve => setTimeout(resolve, 1000)); // Задержка перед нажатием Enter
-                await page.keyboard.press('Enter');
-            }
+        // Вводим значения в поле "Other"
+        const otherInputSelector = 'div[data-qa="choice-7-readable-element"]';
+        const otherInput = await page.$(otherInputSelector);
+        if (otherInput) {
+            await otherInput.type(otherValues.join(', ')); // Вписываем все значения через запятую
+            await new Promise(resolve => setTimeout(resolve, 1000)); // Задержка перед нажатием Enter
+            await page.keyboard.press('Enter');
         }
     }
     

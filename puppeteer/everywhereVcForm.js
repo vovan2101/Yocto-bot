@@ -80,7 +80,37 @@ for (let i = 0; i < inputFields.length; i++) {
             value = formData.ceo_linkedin;
             break;
         case 3:
-            value = formData.specific_location;
+    
+            if (formData.specific_location === 'San Francisco / Bay Area') {
+                value = 'San Francisco, USA';
+            } else if (formData.specific_location === 'New York') {
+                value = 'New York, USA';
+            } else if (formData.specific_location === 'Boston') {
+                value = 'Boston, USA';
+            } else if (formData.specific_location === 'Los Angeles') {
+                value = 'Los Angeles, USA';
+            } else if (formData.specific_location === 'Austin') {
+                value = 'Austin, USA';
+            } else if (formData.specific_location === 'Denver') {
+                value = 'Denver, USA';
+            } else if (formData.specific_location === 'Utah') {
+                value = 'Salt Lake City, USA';  // Можно указать любой город в Utah
+            } else if (formData.specific_location === 'Chicago') {
+                value = 'Chicago, USA';
+            } else if (formData.specific_location === 'Seattle') {
+                value = 'Seattle, USA';
+            } else if (formData.specific_location === 'Atlanta') {
+                value = 'Atlanta, USA';
+            } else if (formData.specific_location === 'Philadelphia') {
+                value = 'Philadelphia, USA';
+            } else if (['US - Other', 'Canada - Other', 'Latin America', 'Europe', 'Asia - India', 'Asia - Other', 'Africa'].includes(formData.specific_location)) {
+                value = formData.other_specific_location;  // Используем значение из other_specific_location
+            } else if (formData.specific_location === 'Toronto') {
+                value = 'Toronto, Canada';
+            } else if (formData.specific_location === 'Montreal') {
+                value = 'Montreal, Canada';
+            }
+
             break;
         case 4:
             value = formData.company_name;

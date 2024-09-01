@@ -12,10 +12,13 @@ const fillVentures2048 = async (formData) => {
     const page = await browser.newPage();
     await page.goto('https://airtable.com/appV89PYGo3zN47f9/shr2lijl8JHhvxghK?prefill_Introd+By+Type=Direct&hide_Introd+By+Type=true', { waitUntil: 'networkidle2' });
 
+    await new Promise(resolve => setTimeout(resolve, 3000));
     const cookieCloseButtonSelector = '.onetrust-close-btn-handler';
     const cookieCloseButton = await page.$(cookieCloseButtonSelector);
     if (cookieCloseButton) {
         await cookieCloseButton.click();
+    } else {
+        console.log('Cookie close button not found in Ventures2048, continuing...');
     }
 
     await page.waitForSelector('.formFieldAndSubmitContainer');
