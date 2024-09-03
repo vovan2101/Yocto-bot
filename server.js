@@ -8,7 +8,13 @@ const upload = multer({ dest: 'uploads/' });
 const app = express();
 const port = 3002;
 
-app.use(cors());
+// Настройка CORS
+const corsOptions = {
+    origin: 'http://localhost:8080',  // Укажите URL вашего фронтенда
+    optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
 app.post('/send-forms', upload.fields([

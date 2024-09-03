@@ -8,7 +8,7 @@ const fillForm = async (formData) => {
 
     console.log('Filling Precursorvc form with data:', formData);
 
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox'], executablePath: '/usr/bin/google-chrome-stable' });
     const page = await browser.newPage();
     await page.goto('https://precursorvc.com/startup/', { waitUntil: 'networkidle2' });
 

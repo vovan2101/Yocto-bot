@@ -9,7 +9,7 @@ const fillSpatialCapitalForm = async (formData) => {
 
     console.log('Filling spatial capital form with data:', formData);
 
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox'], executablePath: '/usr/bin/google-chrome-stable' });
     const page = await browser.newPage();
     await page.goto('https://www.spatial.capital/application', { waitUntil: 'networkidle2' });
 

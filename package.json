@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "create-topics": "node create-topics.js",
+    "start": "npm run create-topics && node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

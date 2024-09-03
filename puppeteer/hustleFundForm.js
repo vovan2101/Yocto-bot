@@ -10,10 +10,9 @@ const fillhustleFundForm = async (formData) => {
     console.log('Filling Hustle Fund form with data:', formData);
 
     const browser = await puppeteer.launch({
-        headless: false, // Открыть браузер в видимом режиме
-        args: [
-            '--window-size=1920,1080' // Установить размер окна
-        ]
+        headless: true,
+        args: ['--no-sandbox', '--disable-setuid-sandbox'],
+        executablePath: '/usr/bin/google-chrome-stable'
     });
     const page = await browser.newPage();
     await page.setViewport({
@@ -608,12 +607,14 @@ const fillhustleFundForm = async (formData) => {
         const otherInputSelector = 'div[aria-label="Enter the input field to type your answer. Use \'enter\' to confirm"]';
         const otherInput = await page.waitForSelector(otherInputSelector);
         await otherInput.type(formData.raising_round);
+        await new Promise(resolve => setTimeout(resolve, 1000));
         await page.keyboard.press('Enter');
+        await new Promise(resolve => setTimeout(resolve, 1000));
     }
 
     // Ожидание и заполнение первого текстового поля
-    await page.waitForSelector('input[placeholder="Type your answer here..."][maxlength="15"][inputmode="numeric"]');
-    await page.type('input[placeholder="Type your answer here..."][maxlength="15"][inputmode="numeric"]', formData.capital_to_raise);
+    await new Promise(resolve => setTimeout(resolve, 5000));
+    await page.keyboard.type(formData.capital_to_raise);
 
     // Добавляем паузу, чтобы страница успела обработать введённое значение
     await new Promise(resolve => setTimeout(resolve, 1000));
@@ -629,41 +630,46 @@ const fillhustleFundForm = async (formData) => {
 
 
     // Выбор значения "Research/Search - Google, etc"
-    const researchSelector = 'li[aria-label="Research/Search - Google, etc"] div[role="radio"]';
-    const researchRadio = await page.waitForSelector(researchSelector);
-    await researchRadio.click();
-    await new Promise(resolve => setTimeout(resolve, 3000));
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    await page.keyboard.press('h');
+
+    await new Promise(resolve => setTimeout(resolve, 2000));
     await page.keyboard.press('Enter');
 
     await new Promise(resolve => setTimeout(resolve, 1000));
-    const yesSelector1 = `div[data-value-string="023af220-f2f5-4d89-9c6e-c3efdad83519-${formData.pitching_live}"]`;
-    const yesRadio1 = await page.waitForSelector(yesSelector1);
-    await yesRadio1.click();
+    if (formData.pitching_live === 'Yes') {
+        // Нажимаем кнопку 'y'
+        await page.keyboard.press('y');
+    } else if (formData.pitching_live === 'No') {
+        // Нажимаем кнопку 'n'
+        await page.keyboard.press('n');
+    }
     await new Promise(resolve => setTimeout(resolve, 3000));
 
-    let shareSubmissionValue = formData.share_submission === 'Yes'
-    ? 'c9617a62-7a7f-4583-bd9f-f44e35543930'
-    : '494245d7-4525-4451-9188-3c9b28644692';
-    const shareSubmissionSelector = `div[data-value-string="${shareSubmissionValue}"]`;
-    const shareSubmissionElement = await page.waitForSelector(shareSubmissionSelector);
-    await shareSubmissionElement.click();
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    if (formData.share_submission === 'Yes') {
+        // Нажимаем кнопку 'a'
+        await page.keyboard.press('a');
+    } else if (formData.share_submission === 'No') {
+        // Нажимаем кнопку 'b'
+        await page.keyboard.press('b');
+    }
     await new Promise(resolve => setTimeout(resolve, 2000));
+    
   
    // Заполнение второго поля
-    await page.waitForSelector('input[aria-labelledby*="short_text-0ad09e2b-e80f-4162-8993-981f386196ce"]');
+    await new Promise(resolve => setTimeout(resolve, 2000));
     await page.keyboard.press('Enter');
     await new Promise(resolve => setTimeout(resolve, 1000));
 
     // Заполнение третьего поля
-    await page.waitForSelector('input[aria-labelledby*="short_text-95fc8363-213d-4bfa-9f0c-9b44192268bc"]');
-    await page.type('input[aria-labelledby*="short_text-95fc8363-213d-4bfa-9f0c-9b44192268bc"]', formData.want_us_to_know);
-    await page.keyboard.press('Enter');
+    await page.keyboard.type(formData.want_us_to_know);
     await new Promise(resolve => setTimeout(resolve, 1000));
 
     // Нажатие на кнопку "Submit"
-    const submitButtonSelector = 'button[data-qa="submit-button deep-purple-submit-button"]';
-    const submitButton = await page.waitForSelector(submitButtonSelector);
-    // await submitButton.click();    
+    await page.keyboard.down('Control'); // Нажимаем и удерживаем клавишу Ctrl
+    await page.keyboard.press('Enter');  // Нажимаем клавишу Enter
+    await page.keyboard.up('Control');   // Отпускаем клавишу Ctrl  
 
     // Ожидание завершения
     await new Promise(resolve => setTimeout(resolve, 5000));

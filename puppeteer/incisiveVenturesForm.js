@@ -8,7 +8,7 @@ const fillIncisiveVenturesForm = async (formData) => {
 
     console.log('Filling Incisive Ventures form with data:', formData);
 
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox'], executablePath: '/usr/bin/google-chrome-stable' });
     const page = await browser.newPage();
     await page.goto('https://airtable.com/appAMCFupamv6Euf8/shrKq915ChZNzweep', { waitUntil: 'networkidle2' });
 

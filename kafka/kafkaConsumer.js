@@ -14,7 +14,8 @@ const kafka = require('kafka-node');
     const libertyVenturesForm = require('../puppeteer/libertyVenturesForm');
     const spatialCapitalForm = require('../puppeteer/spatialCapitalForm');
 
-    const client = new kafka.KafkaClient({ kafkaHost: 'localhost:9092' });
+    const { KafkaClient } = kafka;
+    const client = new KafkaClient({ kafkaHost: 'kafka:9092' });
     const consumer = new kafka.Consumer(
         client,
         [

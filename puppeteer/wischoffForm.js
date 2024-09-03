@@ -8,7 +8,7 @@ const fillWischoffForm = async (formData) => {
 
     console.log('Filling Wischoff form with data:', formData);
 
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox'], executablePath: '/usr/bin/google-chrome-stable' });
     const page = await browser.newPage();
     await page.goto('https://airtable.com/appl0n7pzw0060tns/shr28rdgNSzNC7ioU', { waitUntil: 'networkidle2' });
 
