@@ -85,6 +85,7 @@ const fillhustleFundForm = async (formData) => {
     }
 
     await new Promise(resolve => setTimeout(resolve, 1000));
+
     if (formData.customers_based === 'US') {
         const selector = `li[aria-label="United States"] div[role="radio"][data-value-string="7743e446-8993-423c-bdae-a93983a3f4df"]`;
         await new Promise(resolve => setTimeout(resolve, 1000));
@@ -99,14 +100,62 @@ const fillhustleFundForm = async (formData) => {
         await new Promise(resolve => setTimeout(resolve, 1000));
         await mexicoRadio.click();
     
-    } else {
-        const selector = `li[aria-label="${formData.customers_based}"] div[role="radio"]`;
-        const otherRadio = await page.$(selector);
+    } else if (formData.customers_based === 'Other') {
+        // Если выбран 'Other', кликаем по полю, затем вводим значение и нажимаем Enter
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        await page.keyboard.press('m');
         await new Promise(resolve => setTimeout(resolve, 1000));
-        await otherRadio.click();
+        await page.keyboard.type(formData.other_customers_based);
+        await page.keyboard.press('Enter');
+    
+    } else {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+    
+        let keyToPress;
+        switch (formData.customers_based) {
+            case 'Canada':
+                keyToPress = 'b';
+                break;
+            case 'Africa':
+                keyToPress = 'c';
+                break;
+            case 'Asia - Central':
+                keyToPress = 'd';
+                break;
+            case 'Asia - East':
+                keyToPress = 'e';
+                break;
+            case 'Asia - India / Pakistan / Bangladesh':
+                keyToPress = 'f';
+                break;
+            case 'Asia - Southeast Asia':
+                keyToPress = 'g';
+                break;
+            case 'Australia / New Zealand':
+                keyToPress = 'h';
+                break;
+            case 'Europe':
+                keyToPress = 'i';
+                break;
+            case 'Latin America':
+                keyToPress = 'j';
+                break;
+            case 'Middle East':
+                keyToPress = 'k';
+                break;
+            case 'Global':
+                keyToPress = 'l';
+                break;
+            default:
+                throw new Error(`Unsupported customers_based value: ${formData.customers_based}`);
+        }
+    
+        if (keyToPress) {
+            await page.keyboard.press(keyToPress);
+        }
     }
-
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    await new Promise(resolve => setTimeout(resolve, 2000));
 
     // Выбор радиокнопки для "Are you working full time?"
     if (formData.working_full_time === 'Yes') {
@@ -115,7 +164,7 @@ const fillhustleFundForm = async (formData) => {
         await yesRadio.click();
     
         // Ожидание загрузки следующего вопроса
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise(resolve => setTimeout(resolve, 2000));
     
         // Клик на выбранный вариант для "How long have you been working on this full-time?"
         const durationSelector = `li[aria-label="${formData.full_time_duration}"] div[role="radio"]`;
